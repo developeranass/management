@@ -1,0 +1,54 @@
+name: management
+
+services:
+  # PostgreSQL database
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: MyStrongPassword
+      POSTGRES_DB: team_management
+    # Host port 5433 -> container 5432 (host's own Postgres already uses 5432).
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d team_management"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot job: apply the Prisma schema to the database, then exit.
+  # Uses the "builder" stage because it has the Prisma CLI + schema + config.
+  migrate:
+    build:
+      context: .
+      target: builder
+    environment:
+      DATABASE_URL: "postgresql://postgres:MyStrongPassword@db:5432/team_management?schema=second"
+    command: ["npx", "prisma", "db", "push"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # The Next.js app (production standalone build).
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://postgres:MyStrongPassword@db:5432/team_management?schema=second"
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  db-data:

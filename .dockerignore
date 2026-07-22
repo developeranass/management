@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+npm-debug.log*
+Dockerfile
+.dockerignore
+docker-compose.yml
+# Do not bake secrets into the image — DATABASE_URL is passed via compose env.
+.env
+.env.*
+README.md
+coverage
+.vscode
+.idea
