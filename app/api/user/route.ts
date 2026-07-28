@@ -1,22 +1,26 @@
 import { getCurrentUser } from "@/app/lib/auth";
-import { prisma } from "@/app/lib/db";
-import { Role, User } from "@/app/types";
 import { Prisma } from "@prisma/client";
+import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
+import { use } from "react";
+import { Role , User } from "@/app/types";
+import { prisma } from "@/app/lib/db";
 
-export async function GET(request: NextRequest) {
-
+export async function GET(request : NextRequest) {
+ 
     try{
-        const user = getCurrentUser();
+
+        const user = await getCurrentUser();
         if(!user)
         {
             return NextResponse.json(
-                {
-                    "error" : "you are not authorized to access user information"
-                }, {"status" : 401 }                
+                { 
+                    error : "You are not authorized to access user information" },
+                    {status : 401}
             );
+            
         }
-
+       
         const searchParams = request.nextUrl.searchParams;
         const teamId = searchParams.get("teamId");
         const role = searchParams.get("role");
@@ -24,60 +28,47 @@ export async function GET(request: NextRequest) {
         const where: Prisma.UserWhereInput = {};
         if(user.role === Role.ADMIN)
         {
-
-
+            //Manager can see users in their team or in cross team users but
+            
         }
         else if(user.role == Role.MANAGER)
         {
-
-            where.OR = [{ teamId : user.teamId}, {role : Role.USER}];
-
+            where.OR = [{teamId : user.teamId } , {role: Role.USER}];
         }
         else
         {
             where.teamId = user.teamId;
-            where.role = {not : Role.ADMIN};
+            where.role = {not : Role.ADMIN}
         }
-
 
         if(teamId)
         {
             where.teamId = teamId;
-        }    
+        }
         if(role)
         {
             where.role = role;
-        }    
+        }
+
 
         const users = await prisma.user.findMany({
             where,
-            select :{
+            select : {
                 id : true,
-                email : true,
                 name : true,
-                role: role,
-                team: {
-                    select : {
-                        id : true,
-                        name : true
-                    },
-                },
-             createdAt : true,
-             orderBy : { createdAt : "desc"}       
+                email : true,
+                createdAt : true,
             },
-            return NextResponse.json({users});
-
-    });
+            orderBy : { createdAt : "desc" }
+        });
         
+        
+        return NextResponse.json({users});
+
     }
     catch(error)
     {
-        console.error("Get user error", error);
-        return NextResponse.json({
-            error : "internal server error, something went wrong"
-        }, {"status" : 500});
-
-
+        console.error("Get users error", error);
     }
     
 }
