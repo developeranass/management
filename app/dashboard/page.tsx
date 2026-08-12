@@ -1,43 +1,44 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { apiClient } from "../lib/api-client";
 
-type StatusKey = keyof typeof STATUS;
 
 type Member = {
   name: string;
   email: string;
   role: string;
-  status: StatusKey;
   projects: number;
   active: string;
   grad: string;
 };
 
-const MEMBERS: Member[] = [
-  { name: "Amara Okafor", email: "amara@studio.co", role: "Design Lead",     status: "active",  projects: 8, active: "just now",  grad: "from-violet-500 to-indigo-600" },
-  { name: "Rowan Vitale", email: "rowan@studio.co", role: "Frontend Eng",    status: "active",  projects: 5, active: "3m ago",    grad: "from-sky-500 to-blue-600" },
-  { name: "Sana Qureshi", email: "sana@studio.co",  role: "Product Manager", status: "away",    projects: 6, active: "1h ago",    grad: "from-amber-500 to-orange-600" },
-  { name: "Diego Mendes", email: "diego@studio.co", role: "Backend Eng",     status: "active",  projects: 4, active: "12m ago",   grad: "from-emerald-500 to-teal-600" },
-  { name: "Noor Haddad",  email: "noor@studio.co",  role: "Data Analyst",    status: "offline", projects: 3, active: "yesterday", grad: "from-pink-500 to-rose-600" },
-  { name: "Kai Andersen", email: "kai@studio.co",   role: "QA Engineer",     status: "invited", projects: 0, active: "\u2014",    grad: "from-orange-500 to-red-600" },
-];
 
-const STATUS = {
-  active:  { label: "Active",  dot: "bg-emerald-400", text: "text-emerald-300" },
-  away:    { label: "Away",    dot: "bg-amber-400",   text: "text-amber-300" },
-  offline: { label: "Offline", dot: "bg-zinc-500",    text: "text-zinc-400" },
-  invited: { label: "Invited", dot: "bg-indigo-400",  text: "text-indigo-300" },
-};
 
 const initials = (name: string) => name.split(" ").map((n) => n[0]).slice(0, 2).join("");
 
 export default function Dashboard() {
-  const [query, setQuery] = useState("");
-  const rows = MEMBERS.filter((m) =>
-    (m.name + m.email + m.role).toLowerCase().includes(query.toLowerCase())
-  );
 
+  const [users, setUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+
+    const fetchUsers = async () => {
+      try {
+        const data = await apiClient.getUser();
+        //console.log(data.users);
+        setUsers(data.users);
+      }
+      catch (error) {
+        console.error("Error fetching users", error);
+      }
+    }
+
+    fetchUsers();
+
+  }, []);
+
+  const [query, setQuery] = useState("");
   return (
     <div className="min-h-screen bg-black px-6 py-10 font-sans text-zinc-100 antialiased">
       <div className="mx-auto max-w-4xl">
@@ -67,8 +68,8 @@ export default function Dashboard() {
           {/* card head */}
           <div className="flex items-center justify-between gap-4 border-b border-zinc-800 px-5 py-4">
             <p className="text-sm text-zinc-400">
-              <span className="font-semibold text-white">{rows.length}</span>{" "}
-              {rows.length === 1 ? "member" : "members"}
+              <span className="font-semibold text-white">{users.length}</span>{" "}
+              {users.length === 1 ? "member" : "members"}
             </p>
             <div className="flex items-center gap-2.5">
               <input
@@ -89,15 +90,14 @@ export default function Dashboard() {
               <tr className="border-b border-zinc-800 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 <th className="px-5 py-3">Member</th>
                 <th className="hidden px-5 py-3 sm:table-cell">Role</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="hidden px-5 py-3 text-right sm:table-cell">Projects</th>
-                <th className="hidden px-5 py-3 sm:table-cell">Last active</th>
+
+
                 <th className="px-5 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/70">
-              {rows.map((m) => {
-                const s = STATUS[m.status];
+              {users.map((m) => {
+
                 return (
                   <tr key={m.email} className="transition-colors hover:bg-zinc-900/60">
                     <td className="px-5 py-3">
@@ -112,23 +112,10 @@ export default function Dashboard() {
                       </div>
                     </td>
                     <td className="hidden px-5 py-3 text-sm text-zinc-300 sm:table-cell">{m.role}</td>
-                    <td className="px-5 py-3">
-                      <span className={`inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-medium ${s.text}`}>
-                        <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
-                        {s.label}
-                      </span>
-                    </td>
-                    <td className="hidden px-5 py-3 text-right text-sm font-medium tabular-nums text-zinc-200 sm:table-cell">{m.projects}</td>
-                    <td className="hidden px-5 py-3 text-sm text-zinc-500 sm:table-cell">{m.active}</td>
-                    <td className="px-5 py-3 text-right">
-                      <button aria-label="Row actions" className="rounded-md px-2 py-1 text-lg leading-none text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300">
-                        &#8943;
-                      </button>
-                    </td>
                   </tr>
                 );
               })}
-              {rows.length === 0 && (
+              {users.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-5 py-10 text-center text-sm text-zinc-500">
                     No members match &ldquo;{query}&rdquo;.
