@@ -1,5 +1,4 @@
-import { error } from "console";
-import { register } from "module";
+import { User } from "@/app/types";
 
 
 type FetchOptions = {
@@ -43,7 +42,7 @@ class ApiClient {
     }
 
     async getUser() {
-        return this.fetch("/user")
+        return this.fetch<{ users: Pick<User, "id" | "name" | "email" | "role" | "createdAt">[] }>("/user")
     }
     register(data:RegisterInput) {
         return this.fetch<{ name: string; email: string, password:string  }>("/auth/register", {

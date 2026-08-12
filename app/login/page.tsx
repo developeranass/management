@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from 'next/navigation';
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -8,7 +8,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
     const router = useRouter(); 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); // stop the browser from reloading the page
     setError("");
 
@@ -32,7 +32,7 @@ export default function Login() {
       //alert(`Welcome back, ${email}!`);
         router.push("/dashboard");  
     } catch (err) {
-      setError(err.message || "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }

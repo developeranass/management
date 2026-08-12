@@ -2,7 +2,19 @@
 
 import React, { useState } from "react";
 
-const MEMBERS = [
+type StatusKey = keyof typeof STATUS;
+
+type Member = {
+  name: string;
+  email: string;
+  role: string;
+  status: StatusKey;
+  projects: number;
+  active: string;
+  grad: string;
+};
+
+const MEMBERS: Member[] = [
   { name: "Amara Okafor", email: "amara@studio.co", role: "Design Lead",     status: "active",  projects: 8, active: "just now",  grad: "from-violet-500 to-indigo-600" },
   { name: "Rowan Vitale", email: "rowan@studio.co", role: "Frontend Eng",    status: "active",  projects: 5, active: "3m ago",    grad: "from-sky-500 to-blue-600" },
   { name: "Sana Qureshi", email: "sana@studio.co",  role: "Product Manager", status: "away",    projects: 6, active: "1h ago",    grad: "from-amber-500 to-orange-600" },
@@ -18,7 +30,7 @@ const STATUS = {
   invited: { label: "Invited", dot: "bg-indigo-400",  text: "text-indigo-300" },
 };
 
-const initials = (name:any) => name.split(" ").map((n:any) => n[0]).slice(0, 2).join("");
+const initials = (name: string) => name.split(" ").map((n) => n[0]).slice(0, 2).join("");
 
 export default function Dashboard() {
   const [query, setQuery] = useState("");
@@ -84,7 +96,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/70">
-              {rows.map((m:any) => {
+              {rows.map((m) => {
                 const s = STATUS[m.status];
                 return (
                   <tr key={m.email} className="transition-colors hover:bg-zinc-900/60">

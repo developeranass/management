@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { apiClient } from "@/app/lib/api-client";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ export default function register() {
     const [loading, setLoading] = useState(false);
     
 
-    async function handleSubmit(e)
+    async function handleSubmit(e: FormEvent<HTMLFormElement>)
     {
 
         e.preventDefault();
