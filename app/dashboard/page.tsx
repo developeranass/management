@@ -18,7 +18,7 @@ const STATUS = {
   invited: { label: "Invited", dot: "bg-indigo-400",  text: "text-indigo-300" },
 };
 
-const initials = (name) => name.split(" ").map((n) => n[0]).slice(0, 2).join("");
+const initials = (name:any) => name.split(" ").map((n:any) => n[0]).slice(0, 2).join("");
 
 export default function Dashboard() {
   const [query, setQuery] = useState("");
@@ -84,7 +84,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/70">
-              {rows.map((m) => {
+              {rows.map((m:any) => {
                 const s = STATUS[m.status];
                 return (
                   <tr key={m.email} className="transition-colors hover:bg-zinc-900/60">

@@ -8,6 +8,11 @@ type FetchOptions = {
     headers?: Record<string, string>
 
 }
+ type RegisterInput = {
+    name : string,
+    email : string,
+    password : string
+ }
 
 class ApiClient {
 
@@ -40,6 +45,13 @@ class ApiClient {
     async getUser() {
         return this.fetch("/user")
     }
+    register(data:RegisterInput) {
+        return this.fetch<{ name: string; email: string, password:string  }>("/auth/register", {
+            method: "POST",
+            body: data,
+        });
+    }
+
 
 }
 

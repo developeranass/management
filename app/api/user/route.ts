@@ -45,10 +45,10 @@ export async function GET(request : NextRequest) {
         {
             where.teamId = teamId;
         }
-        if(role)
-        {
-            where.role = role;
-        }
+        // if(role)
+        // {
+        //     where.role = role;
+        // }
 
 
         const users = await prisma.user.findMany({
