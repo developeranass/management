@@ -14,12 +14,13 @@ type Member = {
 };
 
 
-
 const initials = (name: string) => name.split(" ").map((n) => n[0]).slice(0, 2).join("");
 
 export default function Dashboard() {
 
   const [users, setUsers] = useState<any[]>([]);
+  const [query, setQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   useEffect(() => {
 
@@ -33,12 +34,57 @@ export default function Dashboard() {
         console.error("Error fetching users", error);
       }
     }
-
     fetchUsers();
 
   }, []);
 
-  const [query, setQuery] = useState("");
+  // async function handleSearch(text: string) {
+
+  //   if (!text.trim()) {
+  //     setSearchResults([]);
+  //     return;
+  //   }
+
+  //   try {
+
+
+  //     const search = await apiClient.search(query);
+  //     setSearchResults(search.data);
+  //     console.log(search.data);
+
+  //   }
+  //   catch (error) {
+  //     throw new Error("Error searching users: " + (error instanceof Error ? error.message : "Unknown error"));
+
+  //   }
+
+  // }
+
+  useEffect(() => {
+   
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    let cancelled = false;
+    const id = setTimeout(async () => {
+      try {
+        const search = await apiClient.search(query);
+        if (!cancelled) setSearchResults(search.data);
+      } catch (error) {
+        console.error("Error searching users", error);
+      }
+    }, 300);
+
+    return () => { cancelled = true; clearTimeout(id); };
+  }, [query]);
+
+
+  const isSearching = query.trim().length > 0;
+  const displayed = isSearching ? searchResults : users;
+
+
+
   return (
     <div className="min-h-screen bg-black px-6 py-10 font-sans text-zinc-100 antialiased">
       <div className="mx-auto max-w-4xl">
@@ -74,7 +120,7 @@ export default function Dashboard() {
             <div className="flex items-center gap-2.5">
               <input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => { setQuery(e.target.value); }}
                 placeholder="Search\u2026"
                 className="w-44 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 outline-none transition-shadow focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30"
               />
@@ -96,7 +142,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/70">
-              {users.map((m) => {
+              {displayed.map((m) => {
 
                 return (
                   <tr key={m.email} className="transition-colors hover:bg-zinc-900/60">

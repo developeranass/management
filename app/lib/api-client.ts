@@ -44,10 +44,16 @@ class ApiClient {
     async getUser() {
         return this.fetch<{ users: Pick<User, "id" | "name" | "email" | "role" | "createdAt">[] }>("/user")
     }
-    register(data:RegisterInput) {
+    async register(data:RegisterInput) {
         return this.fetch<{ name: string; email: string, password:string  }>("/auth/register", {
             method: "POST",
             body: data,
+        });
+    }
+    async search(query:string) : Promise<any> {
+        return this.fetch<{ query : string  }>("/search", {
+            method: "POST",
+            body: { query },
         });
     }
 
