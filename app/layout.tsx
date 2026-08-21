@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/Header";
+import AppSidebar from "@/components/app-sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import Dashboard from "./dashboard/page";
+import Payment from "./Payment/page";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +34,35 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+
+
+        <Header />
+        <div className="grid grid-cols-12">
+
+          <div className="col-span-2">
+            <SidebarProvider>
+              <AppSidebar />
+              <main>
+                <SidebarTrigger />
+                
+              </main>
+            </SidebarProvider>
+          </div>
+          <div className="col-span-10">
+             {children}
+          {/* <Dashboard /> */}
+          <Payment />
+
+          </div>
+
+         
+
+        </div>
+
+
+
+      </body>
     </html>
   );
 }
