@@ -47,26 +47,26 @@ const AppSidebar = () => {
       <Sidebar>
         <SidebarHeader>
           <SidebarMenu>
+            
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger render={<SidebarMenuButton />}>
-                  Select Workspace
-                  <ChevronDown className="ml-auto" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>
-                    <span>Acme Inc</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton render={<a href="#" />} isActive>
+              <SidebarMenuButton render={<a href="/" />} isActive>
 
                 <span>Home</span>
               </SidebarMenuButton>
 
             </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton render={<a href="/team" />}>
+
+                <span>Team</span>
+              </SidebarMenuButton>
+
+            </SidebarMenuItem>
+
+
+
+
 
           </SidebarMenu>
         </SidebarHeader>

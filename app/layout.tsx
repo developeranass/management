@@ -52,7 +52,7 @@ export default function RootLayout({
           <div className="col-span-10">
              {children}
           {/* <Dashboard /> */}
-          <Payment />
+          {/* <Payment /> */}
 
           </div>
 
