@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { columns, User } from "./columns"
 import { DataTable } from "./data-table"
-import { apiClient } from "../lib/api-client";
+import { apiClient } from "../../lib/api-client";
 
 
 export default function users() {
