@@ -41,8 +41,8 @@ class ApiClient {
 
     }
 
-    async getUser() {
-        return this.fetch<{ users: Pick<User, "id" | "name" | "email" | "role" | "createdAt">[] }>("/user")
+    async getUser(page : number) {
+        return this.fetch<{ users: Pick<User, "id" | "name" | "email" | "role" | "createdAt">[] }>(`/user?page=${page}`)
     }
     async register(data:RegisterInput) {
         return this.fetch<{ name: string; email: string, password:string  }>("/auth/register", {

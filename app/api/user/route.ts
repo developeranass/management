@@ -24,6 +24,8 @@ export async function GET(request : NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const teamId = searchParams.get("teamId");
         const role = searchParams.get("role");
+        const page = Number(searchParams.get("page")) || 1;
+        const pageSize = Number(searchParams.get("pageSize")) || 5;
 
         const where: Prisma.UserWhereInput = {};
         if(user.role === Role.ADMIN)
@@ -60,7 +62,9 @@ export async function GET(request : NextRequest) {
                 role : true,
                 //createdAt : true,
             },
-            orderBy : { createdAt : "desc" }
+            orderBy : { createdAt : "desc" },
+            skip    : (page-1) * pageSize,
+            take : pageSize,           
         });
         
         

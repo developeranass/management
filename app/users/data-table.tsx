@@ -18,17 +18,32 @@ import { features, type DataTableFeatures } from "./data-table-features"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+
 interface DataTableProps<TData extends RowData> {
   columns: ColumnDef<DataTableFeatures, TData>[]
-  data: TData[]
+  data: TData[],
+  onPaginationClick?: (page : number) => void
 }
 
 export function DataTable<TData extends RowData>({
   columns,
   data,
+  onPaginationClick
+  
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [currentPage, setCurrentPage] = React.useState(1);
 
 
   const table = useTable({
@@ -43,12 +58,18 @@ export function DataTable<TData extends RowData>({
     },
   })
 
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page)
+    onPaginationClick?.(page)
+  }
+
+
   return (
 
 
     <div>
 
-    <div className="flex items-center py-4">
+      <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -103,22 +124,48 @@ export function DataTable<TData extends RowData>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#"  onClick={(e) => {
+                  e.preventDefault()
+                  handlePageClick(1)
+                }}  { ...(currentPage == 1 ? {isActive : true} : {isActive : false }) } >1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" { ...(currentPage == 2 ? {isActive : true} : {isActive : false}) } onClick={(e)=>{
+                e.preventDefault();
+                handlePageClick(2)  
+
+              }} >
+                2
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#"   { ...(currentPage == 3) ? {isActive : true} : {isActive : false}  }   onClick={(e)=>{
+                e.preventDefault();
+                handlePageClick(3)  
+
+              }}>3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+
+
+
+
+
+
       </div>
 
     </div>

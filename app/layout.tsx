@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import AppSidebar from "@/components/app-sidebar"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import Dashboard from "./dashboard/page";
-import Payment from "./Payment/page";
+import Payment from "./payments/page";
 
 
 

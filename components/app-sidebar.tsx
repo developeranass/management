@@ -28,6 +28,8 @@ import {
 import { useSidebar } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { ChevronDown, Plus } from "lucide-react"
+import { usePathname } from "next/navigation"
+import path from "path"
 
 
 
@@ -36,42 +38,46 @@ import { ChevronDown, Plus } from "lucide-react"
 const AppSidebar = () => {
 
 
-
-
-
+  const pathname = usePathname();
 
   return (
 
     <>
-    <div className="mt-5">
-      <Sidebar>
-        <SidebarHeader>
-          <SidebarMenu>
-            
-            <SidebarMenuItem>
-              <SidebarMenuButton render={<a href="/" />} isActive>
 
-                <span>Home</span>
-              </SidebarMenuButton>
+      <div className="mt-5">
+        <Sidebar>
+          <SidebarHeader>
+            <SidebarMenu>
 
-            </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton  className="data-[active=true]:bg-blue-900 data-[active=true]:text-white" render={<a href="/" />}  {...(pathname  == '/' ? { isActive : true } : { isActive : false }) } >
 
-            <SidebarMenuItem>
-              <SidebarMenuButton render={<a href="/team" />}>
+                  <span>Home </span>
+                </SidebarMenuButton>
 
-                <span>Team</span>
-              </SidebarMenuButton>
+              </SidebarMenuItem>
 
-            </SidebarMenuItem>
+               <SidebarMenuItem>
+                <SidebarMenuButton  className="data-[active=true]:bg-blue-900 data-[active=true]:text-white" render={<a href="/users" />} {...(pathname == "/users" ? {isActive : true} : {isActive : false} )}>
+
+                  <span>Users</span>
+                </SidebarMenuButton>
+
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton render={<a href="/team" />}>
+
+                  <span>Team</span>
+                </SidebarMenuButton>
+
+              </SidebarMenuItem>
 
 
-
-
-
-          </SidebarMenu>
-        </SidebarHeader>
-      </Sidebar>
-    </div>  
+            </SidebarMenu>
+          </SidebarHeader>
+        </Sidebar>
+      </div>
 
     </>
 
